@@ -210,7 +210,7 @@ def run_training():
 
       # Save a checkpoint and evaluate the model periodically.
       if (step) % 50 == 0 or (step + 1) == FLAGS.max_steps:
-        saver.save(sess, 'models_0727/my_modle', global_step=step)
+        saver.save(sess, 'models/c3d_ucf101_model', global_step=step)
         print('Training Data Eval:')
         acc = sess.run(accuracys, feed_dict={images_placeholder: train_images, labels_placeholder: train_labels})
         acc = np.array(acc).mean()
