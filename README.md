@@ -32,7 +32,7 @@
 python train_c3d_ucf101.py
 
 ##experiment result:
-I can get a 88.1% accuracy with this code in iteartion 10000
+I can get a 87.1% accuracy with this code in iteartion 10000 (maybe this validate result have some problem, I may have make some train set and test set be same.I will check it later)
 
 ##reference:
 
