@@ -22,10 +22,12 @@ from __future__ import print_function
 import os.path
 import time
 
+import numpy
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 
 import input_data
+import files_client_thread
 import model_build 
 import math
 import numpy as np
@@ -36,8 +38,15 @@ from PIL import Image
 # Basic model parameters as external flags.
 flags = tf.app.flags
 gpu_num = 4 
+#flags.DEFINE_float('learning_rate', 0.0, 'Initial learning rate.')
+flags.DEFINE_string("job_name", "", "Either 'ps' or 'worker'")
+flags.DEFINE_integer("task_index", 0, "Index of task within the job")
+flags.DEFINE_float('learning_rate', 1e-4, 'Initial learning rate.')
+flags.DEFINE_integer('max_steps', 20000, 'Number of steps to run trainer.')
 flags.DEFINE_integer('batch_size', 16 , 'Batch size.  '
                      'Must divide evenly into the dataset sizes.')
+flags.DEFINE_string('train_dir', './', 'Directory to put the training data.')
+
 FLAGS = flags.FLAGS
 
 
@@ -59,7 +68,7 @@ def placeholder_inputs(batch_size):
   # image and label tensors, except the first dimension is now batch_size
   # rather than the full size of the train or test data sets.
   images_placeholder = tf.placeholder(tf.float32, shape=(batch_size,
-                                                         model_build.FRAMES,
+                                                         16,
                                                          model_build.IMAGE_SIZE,
                                                          model_build.IMAGE_SIZE,
                                                          model_build.CHANNELS))
@@ -82,9 +91,10 @@ def _variable_with_weight_decay(name, shape, stddev, wd):
   return var
 
 def run_test():
+  fc = files_client_thread.FileClient("10.58.116.230", 4170,FLAGS.batch_size*gpu_num, 16)
   # Get the sets of images and labels for training, validation, and
   images_placeholder, labels_placeholder = placeholder_inputs(FLAGS.batch_size*gpu_num)
-  with tf.variable_scope('var_name') as var_scope:
+  with tf.variable_scope('c3d_var') as var_scope:
     weights = {
             'wc1': _variable_with_weight_decay('wc1',[3, 3, 3, 3, 64],0.04,0.00),
             'wc2': _variable_with_weight_decay('wc2',[3, 3, 3, 64, 128],0.04,0.00),
@@ -123,7 +133,11 @@ def run_test():
   init = tf.initialize_all_variables()
   sess.run(init)
   # Create a saver for writing training checkpoints.
-  saver.restore(sess,"model_c3d_ucf_iter10000")
+  saver.restore(sess,"model_c3d_0711")
+  #sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True))
+  # Run the Op to initialize the variables.
+  #init = tf.initialize_all_variables()
+  #sess.run(init)
   # And then after everything is built, start the training loop.
   write_file = open("predict_ret.txt","w+")
   start_pos = 0
@@ -132,7 +146,8 @@ def run_test():
     # Fill a feed dictionary with the actual set of images and labels
     # for this particular training step.
     start_time = time.time()
-    test_images,train_labels,next_start_pos,predict_files = input_data.ReadTestDataLabelFromFile('list/test_ucf101.trainVideos',FLAGS.batch_size*gpu_num,start_pos)
+    #test_images,train_labels,next_start_pos,predict_files = input_data.ReadTestDataLabelFromFile('bruce_list/test_pos.list',FLAGS.batch_size*gpu_num,start_pos)
+    test_images,test_labels = input_data.ReadDataLabelFromServer(fc)
     predict_score = norm_score.eval(session = sess,feed_dict={images_placeholder: test_images}) 
     for i in range(0,FLAGS.batch_size*gpu_num):
       write_file.write(str(test_labels[i]))
