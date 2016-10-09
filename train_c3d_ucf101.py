@@ -1,3 +1,18 @@
+# Copyright 2015 Google Inc. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+
 """Trains and Evaluates the MNIST network using a feed dictionary."""
 # pylint: disable=missing-docstring
 from __future__ import absolute_import
@@ -7,10 +22,12 @@ from __future__ import print_function
 import os.path
 import time
 
+import numpy
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 
 import input_data
+import files_client_thread
 import model_build 
 import math
 import numpy as np
@@ -19,9 +36,10 @@ import numpy as np
 # Basic model parameters as external flags.
 flags = tf.app.flags
 gpu_num = 4 
+#flags.DEFINE_float('learning_rate', 0.0, 'Initial learning rate.')
 flags.DEFINE_float('learning_rate', 1e-3, 'Initial learning rate.')
 flags.DEFINE_integer('max_steps', 20000, 'Number of steps to run trainer.')
-flags.DEFINE_integer('batch_size', 16 , 'Batch size.  '
+flags.DEFINE_integer('batch_size', 16, 'Batch size.  '
                      'Must divide evenly into the dataset sizes.')
 
 FLAGS = flags.FLAGS
@@ -111,15 +129,18 @@ def tower_loss(scope,images,labels,weights,biases,batch_size):
   Returns:
      Tensor of shape [] containing the total loss for a batch of data
   """
-  logits = model_build.inference_c3d(images,0.5,batch_size,weights,biases) 
+  logits = model_build.inference_c3d(images,0.5,batch_size,weights,biases,scope) 
+  #logits = model_build.inference_c3d_parellea(images,0.5,batch_size,weights,biases,scope) 
   cross_entropy_mean = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, labels))
   cross_entropy_mean = tf.Print(cross_entropy_mean,[cross_entropy_mean],'cross_entropy_mean: ')
   tf.add_to_collection('losses', cross_entropy_mean)
+  tf.scalar_summary(scope + "cross_entropy_mean",cross_entropy_mean)
 
   losses = tf.get_collection('losses', scope)
 
   # Calculate the total loss for the current tower.
   total_loss = tf.add_n(losses, name='total_loss')
+  tf.scalar_summary(scope + "regular_loss",total_loss)
   total_loss = tf.Print(total_loss,[total_loss],'loss: ')
 
   # Compute the moving average of all individual losses and the total loss.
@@ -136,6 +157,7 @@ def tower_loss(scope,images,labels,weights,biases,batch_size):
 def run_training():
   # Get the sets of images and labels for training, validation, and
   # Tell TensorFlow that the model will be built into the default Graph.
+  fc_train = files_client_thread.FileClient("10.58.116.230", 9452,FLAGS.batch_size*gpu_num, 16)
   with tf.Graph().as_default():
     images_placeholder, labels_placeholder = placeholder_inputs(FLAGS.batch_size*gpu_num)
     lr = tf.placeholder(tf.float32, shape=[])
@@ -173,11 +195,17 @@ def run_training():
               'out': _variable_with_weight_decay('bout',[model_build.NUM_CLASSES],0.04,0.0,gpu_index),
             }
           tf.get_variable_scope().reuse_variables()
+          tf.histogram_summary(scope+"w3a",weights['wc3a'])
+          tf.histogram_summary(scope+"wd1",weights['wd1'])
+          tf.histogram_summary(scope+"b3a",biases['bc3a'])
+          tf.histogram_summary(scope+"bd1",biases['bd1'])
           loss,accuracy = tower_loss(scope,images_placeholder[gpu_index*FLAGS.batch_size:(gpu_index+1)*FLAGS.batch_size,:,:,:,:],
                   labels_placeholder[gpu_index*FLAGS.batch_size:(gpu_index+1)*FLAGS.batch_size],weights,biases,FLAGS.batch_size) 
           grads = opt.compute_gradients(loss)
           tower_grads.append(grads)
           accuracys.append(accuracy) 
+    ave_accuracy = tf.reduce_mean(accuracys)
+    tf.scalar_summary("accuracy",ave_accuracy)
     grads = average_gradients(tower_grads)
     apply_gradient_op = opt.apply_gradients(grads)
     variable_averages = tf.train.ExponentialMovingAverage(MOVING_AVERAGE_DECAY)
@@ -191,7 +219,9 @@ def run_training():
     # Run the Op to initialize the variables.
     init = tf.initialize_all_variables()
     sess.run(init)
-    #saver.restore(sess,"./model_c3d_ucf101_0713_pm")
+    merged_summary_op = tf.merge_all_summaries()
+    summary_writer = tf.train.SummaryWriter('./visual_logs', sess.graph)
+    #saver.restore(sess,"models_0927/my_modle-5500")
     # And then after everything is built, start the training loop.
     lr_step = 2000
     for step in xrange(FLAGS.max_steps):
@@ -199,7 +229,8 @@ def run_training():
       # for this particular training step.
       start_time = time.time()
       print ('learning rate: ' + str(FLAGS.learning_rate*pow(0.1,(int)(step/lr_step))))
-      train_images,train_labels = input_data.ReadDataLabelFromFile_16('list/train_ucf101.trainVideos',FLAGS.batch_size*gpu_num)
+      #train_images,train_labels = input_data.ReadDataLabelFromServer('bruce_list/sex.trainVideos',FLAGS.batch_size*gpu_num)
+      train_images,train_labels = input_data.ReadDataLabelFromServer(fc_train)
       sess.run(train_op, feed_dict={images_placeholder: train_images, 
           labels_placeholder: train_labels,
           lr: FLAGS.learning_rate*pow(0.1,(int)(step/lr_step))
@@ -207,16 +238,25 @@ def run_training():
           )
       duration = time.time() - start_time
       print('Step %d: %.3f sec' % (step, duration))
+      #save visual log
+      if (step) % 10 == 0:
+          summary_str = sess.run(merged_summary_op,
+                    feed_dict={images_placeholder: train_images, 
+                    labels_placeholder: train_labels,
+                    lr: FLAGS.learning_rate*pow(0.1,(int)(step/lr_step))
+                    }
+          )
+          summary_writer.add_summary(summary_str, step)
 
       # Save a checkpoint and evaluate the model periodically.
       if (step) % 50 == 0 or (step + 1) == FLAGS.max_steps:
-        saver.save(sess, 'models/c3d_ucf101_model', global_step=step)
+        saver.save(sess, 'models/my_modle', global_step=step)
         print('Training Data Eval:')
         acc = sess.run(accuracys, feed_dict={images_placeholder: train_images, labels_placeholder: train_labels})
         acc = np.array(acc).mean()
         print ("accuracy: " + "{:.5f}".format(acc))
         print('Validation Data Eval:')
-        val_images,val_labels = input_data.ReadDataLabelFromFile_16('list/test_ucf101.trainVideos',FLAGS.batch_size*gpu_num)
+        val_images,val_labels = input_data.ReadDataLabelFromServer(fc_train)
         acc = sess.run(accuracys, feed_dict={images_placeholder: val_images, labels_placeholder: val_labels})
         acc = np.array(acc).mean()
         print ("accuracy: " + "{:.5f}".format(acc))
