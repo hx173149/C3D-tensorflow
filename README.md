@@ -8,6 +8,8 @@
  2. you must have download the [UCF101][3] (Action Recognition Data Set)
  3. each single avi file is decoded with 5FPS(it's depend your decision) in a single directory
  like in the "ucf_101_list/train_ucf101.trainVideos":
+ 4. if you want to test my pretrained model, you need to download my model from here:
+ https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0
 
 > database/ucf101/train/ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c01 0
 > database/ucf101/train/ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c02 0
@@ -35,7 +37,8 @@ the trained model will saved in models
     python predict_c3d_ucf101.py  
 
 ##experiment result:
-I can get a 87.1% accuracy with this code in iteartion 10000 (maybe this validate result have some problem, I may have make some train set and test set be same.I will check it later)
+I can get a 72.6% accuracy with this code and pretrained from the sports1M model, and you can download my pretrained UCF101 model and mean file from here:
+https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0
 
 ##reference:
 
