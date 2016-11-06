@@ -37,7 +37,7 @@ the trained model will saved in models
     python predict_c3d_ucf101.py  
 
 ##experiment result:
-I can get a 72.6% accuracy with this code and pretrained from the sports1M model, and you can download my pretrained UCF101 model and mean file from here:
+I can get a 72.6% accuracy in test dataset with this code and pretrained from the sports1M model, and you can download my pretrained UCF101 model and mean file from here:
 https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0
 
 ##reference:
