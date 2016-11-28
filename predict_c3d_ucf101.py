@@ -25,6 +25,7 @@ from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 import input_data
 import c3d_model
+import numpy as np
 
 # Basic model parameters as external flags.
 flags = tf.app.flags
@@ -134,10 +135,14 @@ def run_test():
             feed_dict={images_placeholder: test_images}
             )
     for i in range(0, valid_len):
-      write_file.write('{} {} {}\n'.format(
-              str(test_labels[i]),
-              str(predict_score[i][0]),
-              str(predict_score[i][1])))
+      true_label = test_labels[i],
+      top1_predicted_label = np.argmax(predict_score[i])
+      # Write results: true label, class prob for true label, predicted label, class prob for predicted label
+      write_file.write('{}, {}, {}, {}\n'.format(
+              true_label[0],
+              predict_score[i][true_label],
+              top1_predicted_label,
+              predict_score[i][top1_predicted_label]))
   write_file.close()
   print("done")
 
