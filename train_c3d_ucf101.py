@@ -30,8 +30,7 @@ flags = tf.app.flags
 gpu_num = 2
 #flags.DEFINE_float('learning_rate', 0.0, 'Initial learning rate.')
 flags.DEFINE_integer('max_steps', 5000, 'Number of steps to run trainer.')
-flags.DEFINE_integer('batch_size', 10, 'Batch size.  '
-                     'Must divide evenly into the dataset sizes.')
+flags.DEFINE_integer('batch_size', 10, 'Batch size.')
 FLAGS = flags.FLAGS
 MOVING_AVERAGE_DECAY = 0.9999
 model_save_dir = './models'
@@ -219,7 +218,7 @@ def run_training():
     test_writer = tf.train.SummaryWriter('./visual_logs/test', sess.graph)
     for step in xrange(FLAGS.max_steps):
       start_time = time.time()
-      train_images, train_labels, _, _ = input_data.read_clip_and_label(
+      train_images, train_labels, _, _, _ = input_data.read_clip_and_label(
                       filename='list/train.list',
                       batch_size=FLAGS.batch_size * gpu_num,
                       num_frames_per_clip=c3d_model.NUM_FRAMES_PER_CLIP,
@@ -246,7 +245,7 @@ def run_training():
         print ("accuracy: " + "{:.5f}".format(acc))
         train_writer.add_summary(summary, step)
         print('Validation Data Eval:')
-        val_images, val_labels, _, _ = input_data.read_clip_and_label(
+        val_images, val_labels, _, _, _ = input_data.read_clip_and_label(
                         filename='list/test.list',
                         batch_size=FLAGS.batch_size * gpu_num,
                         num_frames_per_clip=c3d_model.NUM_FRAMES_PER_CLIP,

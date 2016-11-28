@@ -29,8 +29,7 @@ import c3d_model
 # Basic model parameters as external flags.
 flags = tf.app.flags
 gpu_num = 2
-flags.DEFINE_integer('batch_size', 10 , 'Batch size.  '
-                     'Must divide evenly into the dataset sizes.')
+flags.DEFINE_integer('batch_size', 10 , 'Batch size.')
 FLAGS = flags.FLAGS
 
 def placeholder_inputs(batch_size):
@@ -69,6 +68,9 @@ def _variable_with_weight_decay(name, shape, stddev, wd):
 
 def run_test():
   model_name = "./sports1m_finetuning_ucf101.model"
+  test_list_file = 'list/test.list'
+  num_test_videos = len(list(open(test_list_file,'r')))
+  print("Number of test videos={}".format(num_test_videos))
 
   # Get the sets of images and labels for training, validation, and
   images_placeholder, labels_placeholder = placeholder_inputs(FLAGS.batch_size * gpu_num)
@@ -116,14 +118,14 @@ def run_test():
   bufsize = 0
   write_file = open("predict_ret.txt", "w+", bufsize)
   next_start_pos = 0
-  all_steps = (int)(10000 / (FLAGS.batch_size * gpu_num))
+  all_steps = int((num_test_videos - 1) / (FLAGS.batch_size * gpu_num) + 1)
   for step in xrange(all_steps):
     # Fill a feed dictionary with the actual set of images and labels
     # for this particular training step.
     start_time = time.time()
-    test_images, test_labels, next_start_pos, predict_files = \
+    test_images, test_labels, next_start_pos, _, valid_len = \
             input_data.read_clip_and_label(
-                    'list/test.list',
+                    test_list_file,
                     FLAGS.batch_size * gpu_num,
                     start_pos=next_start_pos
                     )
@@ -131,7 +133,7 @@ def run_test():
             session=sess,
             feed_dict={images_placeholder: test_images}
             )
-    for i in range(0, FLAGS.batch_size * gpu_num):
+    for i in range(0, valid_len):
       write_file.write('{} {} {}\n'.format(
               str(test_labels[i]),
               str(predict_score[i][0]),

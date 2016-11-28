@@ -50,6 +50,7 @@ def read_clip_and_label(filename, batch_size, start_pos=-1, num_frames_per_clip=
   data = []
   label = []
   batch_index = 0
+  next_batch_start = -1
   lines = list(lines)
   np_mean = np.load('crop_mean.npy').reshape([num_frames_per_clip, crop_size, crop_size, 3])
   # Forcing shuffle, if start_pos is not specified
@@ -88,7 +89,16 @@ def read_clip_and_label(filename, batch_size, start_pos=-1, num_frames_per_clip=
       label.append(int(tmp_label))
       batch_index = batch_index + 1
       read_dirnames.append(dirname)
+
+  # pad (duplicate) data/label if less than batch_size
+  valid_len = len(data)
+  pad_len = batch_size - valid_len
+  if pad_len:
+    for i in range(pad_len):
+      data.append(img_datas)
+      label.append(int(tmp_label))
+
   np_arr_data = np.array(data).astype(np.float32)
   np_arr_label = np.array(label).astype(np.int64)
 
-  return np_arr_data, np_arr_label, next_batch_start, read_dirnames
+  return np_arr_data, np_arr_label, next_batch_start, read_dirnames, valid_len
