@@ -121,6 +121,9 @@ def run_training():
   # Create model directory
   if not os.path.exists(model_save_dir):
       os.makedirs(model_save_dir)
+  use_pretrained_model = False
+  model_filename = "./sports1m_finetuning_ucf101.model"
+
   with tf.Graph().as_default():
     global_step = tf.get_variable(
                     'global_step',
@@ -210,7 +213,8 @@ def run_training():
                                     )
                     )
     sess.run(init)
-    saver.restore(sess,"sports1m_finetuning_ucf101.model")
+    if os.path.isfile(model_filename) and use_pretrained_model:
+      saver.restore(sess, model_filename)
 
     # Create summary writter
     merged = tf.merge_all_summaries()
