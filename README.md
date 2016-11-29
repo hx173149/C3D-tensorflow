@@ -7,6 +7,8 @@ a) [tensorflow][1]
 b) [Pillow][2]
 2. You must have downloaded the [UCF101][3] (Action Recognition Data Set)
 3. Each single avi file is decoded with 5FPS (it's depend your decision) in a single directory.
+    - you can use the convert.sh file inside the list to decode the ucf101 video files
+    - run `python list/convert.sh .../UCF101/ 5`
 4. Generate {train,test}.list files in `list` directory. Each line corresponds to "image directory" and a class (zero-based). For example:
 ```
 database/ucf101/train/ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c01 0
