@@ -7,9 +7,12 @@ a) [tensorflow][1]
 b) [Pillow][2]
 2. You must have downloaded the [UCF101][3] (Action Recognition Data Set)
 3. Each single avi file is decoded with 5FPS (it's depend your decision) in a single directory.
-    - you can use the convert.sh file inside the list to decode the ucf101 video files
-    - run `python list/convert.sh .../UCF101/ 5`
+    - you can use the `./list/convert_video_to_images.sh` script to decode the ucf101 video files
+    - run `./list/convert_video_to_images.sh .../UCF101 5`
 4. Generate {train,test}.list files in `list` directory. Each line corresponds to "image directory" and a class (zero-based). For example:
+    - you can use the `./list/convert_images_to_list.sh` script to generate the {train,test}.list for the dataset
+    - run `./list/convert_images_to_list.sh .../dataset_images dataset_train`, this will generate `dataset_train.list` file inside the root folder
+
 ```
 database/ucf101/train/ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c01 0
 database/ucf101/train/ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c02 0
@@ -31,6 +34,7 @@ database/ucf101/train/BalanceBeam/v_BalanceBeam_g01_c03 4
 database/ucf101/train/BalanceBeam/v_BalanceBeam_g01_c04 4
 ...
 ```
+
 5. If you want to test my pre-trained model, you need to download my model from here: https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0
 
 ## Run command:
