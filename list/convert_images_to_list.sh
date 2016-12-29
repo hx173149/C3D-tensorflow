@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # convert the images folder to the test.list and train.list file according to
-#   the distribution
+#   the distribution, command will clear the train.list and test.list files first
 #
 #   Args:
 #       path: the path to the video folder
@@ -20,6 +20,8 @@
 #       /Volumes/passport/datasets/action_kth/origin_images/handclapping/person01_handclapping_d2_uncomp 1
 #       ...
 
+> train.list
+> test.list
 COUNT=-1
 for folder in $1/*
 do
