@@ -11,7 +11,7 @@ b) [Pillow][2]
     - run `./list/convert_video_to_images.sh .../UCF101 5`
 4. Generate {train,test}.list files in `list` directory. Each line corresponds to "image directory" and a class (zero-based). For example:
     - you can use the `./list/convert_images_to_list.sh` script to generate the {train,test}.list for the dataset
-    - run `./list/convert_images_to_list.sh .../dataset_images dataset_train`, this will generate `dataset_train.list` file inside the root folder
+    - run `./list/convert_images_to_list.sh .../dataset_images 4`, this will generate `test.list` and `train.list` files by a factor 4 inside the root folder
 
 ```
 database/ucf101/train/ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c01 0
