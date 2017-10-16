@@ -66,7 +66,7 @@ def average_gradients(tower_grads):
     for g, _ in grad_and_vars:
       expanded_g = tf.expand_dims(g, 0)
       grads.append(expanded_g)
-    grad = tf.concat(0, grads)
+    grad = tf.concat(grads, 0)
     grad = tf.reduce_mean(grad, 0)
     v = grad_and_vars[0][1]
     grad_and_var = (grad, v)
@@ -75,26 +75,18 @@ def average_gradients(tower_grads):
 
 def tower_loss(name_scope, logit, labels):
   cross_entropy_mean = tf.reduce_mean(
-                  tf.nn.sparse_softmax_cross_entropy_with_logits(logit, labels)
+                  tf.nn.sparse_softmax_cross_entropy_with_logits(labels=labels,logits=logit)
                   )
-  tf.scalar_summary(
-                  name_scope + 'cross entropy',
+  tf.summary.scalar(
+                  name_scope + '_cross_entropy',
                   cross_entropy_mean
                   )
-  weight_decay_loss = tf.add_n(tf.get_collection('losses', name_scope))
-  tf.scalar_summary(name_scope + 'weight decay loss', weight_decay_loss)
-  tf.add_to_collection('losses', cross_entropy_mean)
-  losses = tf.get_collection('losses', name_scope)
+  weight_decay_loss = tf.get_collection('weightdecay_losses')
+  tf.summary.scalar(name_scope + '_weight_decay_loss', tf.reduce_mean(weight_decay_loss) )
 
   # Calculate the total loss for the current tower.
-  total_loss = tf.add_n(losses, name='total_loss')
-  tf.scalar_summary(name_scope + 'total loss', total_loss)
-
-  # Compute the moving average of all individual losses and the total loss.
-  loss_averages = tf.train.ExponentialMovingAverage(0.99, name='loss')
-  loss_averages_op = loss_averages.apply(losses + [total_loss])
-  with tf.control_dependencies([loss_averages_op]):
-    total_loss = tf.identity(total_loss)
+  total_loss = cross_entropy_mean + weight_decay_loss 
+  tf.summary.scalar(name_scope + '_total_loss', tf.reduce_mean(total_loss) )
   return total_loss
 
 def tower_acc(logit, labels):
@@ -110,8 +102,8 @@ def _variable_on_cpu(name, shape, initializer):
 def _variable_with_weight_decay(name, shape, wd):
   var = _variable_on_cpu(name, shape, tf.contrib.layers.xavier_initializer())
   if wd is not None:
-    weight_decay = tf.mul(tf.nn.l2_loss(var), wd, name='weight_loss')
-    tf.add_to_collection('losses', weight_decay)
+    weight_decay = tf.nn.l2_loss(var)*wd
+    tf.add_to_collection('weightdecay_losses', weight_decay)
   return var
 
 def run_training():
@@ -121,7 +113,7 @@ def run_training():
   # Create model directory
   if not os.path.exists(model_save_dir):
       os.makedirs(model_save_dir)
-  use_pretrained_model = False
+  use_pretrained_model = True 
   model_filename = "./sports1m_finetuning_ucf101.model"
 
   with tf.Graph().as_default():
@@ -137,13 +129,10 @@ def run_training():
     tower_grads1 = []
     tower_grads2 = []
     logits = []
-    opt1 = tf.train.AdamOptimizer(1e-4)
-    opt2 = tf.train.AdamOptimizer(2e-4)
-    for gpu_index in range(0, gpu_num):
-      with tf.device('/gpu:%d' % gpu_index):
-        with tf.name_scope('%s_%d' % ('dextro-research', gpu_index)) as scope:
-          with tf.variable_scope('var_name') as var_scope:
-            weights = {
+    opt_stable = tf.train.AdamOptimizer(1e-4)
+    opt_finetuning = tf.train.AdamOptimizer(1e-3)
+    with tf.variable_scope('var_name') as var_scope:
+      weights = {
               'wc1': _variable_with_weight_decay('wc1', [3, 3, 3, 3, 64], 0.0005),
               'wc2': _variable_with_weight_decay('wc2', [3, 3, 3, 64, 128], 0.0005),
               'wc3a': _variable_with_weight_decay('wc3a', [3, 3, 3, 128, 256], 0.0005),
@@ -156,7 +145,7 @@ def run_training():
               'wd2': _variable_with_weight_decay('wd2', [4096, 4096], 0.0005),
               'out': _variable_with_weight_decay('wout', [4096, c3d_model.NUM_CLASSES], 0.0005)
               }
-            biases = {
+      biases = {
               'bc1': _variable_with_weight_decay('bc1', [64], 0.000),
               'bc2': _variable_with_weight_decay('bc2', [128], 0.000),
               'bc3a': _variable_with_weight_decay('bc3a', [256], 0.000),
@@ -169,33 +158,36 @@ def run_training():
               'bd2': _variable_with_weight_decay('bd2', [4096], 0.000),
               'out': _variable_with_weight_decay('bout', [c3d_model.NUM_CLASSES], 0.000),
               }
-          varlist1 = weights.values()
-          varlist2 = biases.values()
-          logit = c3d_model.inference_c3d(
-                          images_placeholder[gpu_index * FLAGS.batch_size:(gpu_index + 1) * FLAGS.batch_size,:,:,:,:],
-                          0.5,
-                          FLAGS.batch_size,
-                          weights,
-                          biases
-                          )
-          loss = tower_loss(
-                          scope,
-                          logit,
-                          labels_placeholder[gpu_index * FLAGS.batch_size:(gpu_index + 1) * FLAGS.batch_size]
-                          )
-          grads1 = opt1.compute_gradients(loss, varlist1)
-          grads2 = opt2.compute_gradients(loss, varlist2)
-          tower_grads1.append(grads1)
-          tower_grads2.append(grads2)
-          logits.append(logit)
-          tf.get_variable_scope().reuse_variables()
-    logits = tf.concat(0, logits)
+    for gpu_index in range(0, gpu_num):
+      with tf.device('/gpu:%d' % gpu_index):
+        
+        varlist2 = [ weights['out'],biases['out'] ]
+        varlist1 = list( set(weights.values() + biases.values()) - set(varlist2) )
+        logit = c3d_model.inference_c3d(
+                        images_placeholder[gpu_index * FLAGS.batch_size:(gpu_index + 1) * FLAGS.batch_size,:,:,:,:],
+                        0.5,
+                        FLAGS.batch_size,
+                        weights,
+                        biases
+                        )
+        loss_name_scope = ('gpud_%d_loss' % gpu_index)
+        loss = tower_loss(
+                        loss_name_scope,
+                        logit,
+                        labels_placeholder[gpu_index * FLAGS.batch_size:(gpu_index + 1) * FLAGS.batch_size]
+                        )
+        grads1 = opt_stable.compute_gradients(loss, varlist1)
+        grads2 = opt_finetuning.compute_gradients(loss, varlist2)
+        tower_grads1.append(grads1)
+        tower_grads2.append(grads2)
+        logits.append(logit)
+    logits = tf.concat(logits,0)
     accuracy = tower_acc(logits, labels_placeholder)
-    tf.scalar_summary('accuracy', accuracy)
+    tf.summary.scalar('accuracy', accuracy)
     grads1 = average_gradients(tower_grads1)
     grads2 = average_gradients(tower_grads2)
-    apply_gradient_op1 = opt1.apply_gradients(grads1)
-    apply_gradient_op2 = opt2.apply_gradients(grads2, global_step=global_step)
+    apply_gradient_op1 = opt_stable.apply_gradients(grads1)
+    apply_gradient_op2 = opt_finetuning.apply_gradients(grads2, global_step=global_step)
     variable_averages = tf.train.ExponentialMovingAverage(MOVING_AVERAGE_DECAY)
     variables_averages_op = variable_averages.apply(tf.trainable_variables())
     train_op = tf.group(apply_gradient_op1, apply_gradient_op2, variables_averages_op)
@@ -203,23 +195,20 @@ def run_training():
 
     # Create a saver for writing training checkpoints.
     saver = tf.train.Saver(weights.values() + biases.values())
-    init = tf.initialize_all_variables()
+    init = tf.global_variables_initializer()
 
     # Create a session for running Ops on the Graph.
     sess = tf.Session(
-                    config=tf.ConfigProto(
-                                    allow_soft_placement=True,
-                                    log_device_placement=True
-                                    )
+                    config=tf.ConfigProto(allow_soft_placement=True)
                     )
     sess.run(init)
     if os.path.isfile(model_filename) and use_pretrained_model:
       saver.restore(sess, model_filename)
 
     # Create summary writter
-    merged = tf.merge_all_summaries()
-    train_writer = tf.train.SummaryWriter('./visual_logs/train', sess.graph)
-    test_writer = tf.train.SummaryWriter('./visual_logs/test', sess.graph)
+    merged = tf.summary.merge_all()
+    train_writer = tf.summary.FileWriter('./visual_logs/train', sess.graph)
+    test_writer = tf.summary.FileWriter('./visual_logs/test', sess.graph)
     for step in xrange(FLAGS.max_steps):
       start_time = time.time()
       train_images, train_labels, _, _, _ = input_data.read_clip_and_label(
@@ -242,10 +231,9 @@ def run_training():
         print('Training Data Eval:')
         summary, acc = sess.run(
                         [merged, accuracy],
-                        feed_dict={
-                                        images_placeholder: train_images,
-                                        labels_placeholder: train_labels
-                                        })
+                        feed_dict={images_placeholder: train_images,
+                            labels_placeholder: train_labels
+                            })
         print ("accuracy: " + "{:.5f}".format(acc))
         train_writer.add_summary(summary, step)
         print('Validation Data Eval:')

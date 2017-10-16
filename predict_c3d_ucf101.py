@@ -63,7 +63,7 @@ def _variable_on_cpu(name, shape, initializer):
 def _variable_with_weight_decay(name, shape, stddev, wd):
   var = _variable_on_cpu(name, shape, tf.truncated_normal_initializer(stddev=stddev))
   if wd is not None:
-    weight_decay = tf.mul(tf.nn.l2_loss(var), wd, name='weight_loss')
+    weight_decay = tf.nn.l2_loss(var) * wd
     tf.add_to_collection('losses', weight_decay)
   return var
 
@@ -107,11 +107,11 @@ def run_test():
     with tf.device('/gpu:%d' % gpu_index):
       logit = c3d_model.inference_c3d(images_placeholder[gpu_index * FLAGS.batch_size:(gpu_index + 1) * FLAGS.batch_size,:,:,:,:], 0.6, FLAGS.batch_size, weights, biases)
       logits.append(logit)
-  logits = tf.concat(0, logits)
+  logits = tf.concat(logits,0)
   norm_score = tf.nn.softmax(logits)
   saver = tf.train.Saver()
-  sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True))
-  init = tf.initialize_all_variables()
+  sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
+  init = tf.global_variables_initializer()
   sess.run(init)
   # Create a saver for writing training checkpoints.
   saver.restore(sess, model_name)
