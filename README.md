@@ -2,14 +2,15 @@
 
 ## Requirements:
 
-1. You must have installed the following two python libs:
+1. Have installed the tensorflow >= 1.2 version
+2. You must have installed the following two python libs:
 a) [tensorflow][1]
 b) [Pillow][2]
-2. You must have downloaded the [UCF101][3] (Action Recognition Data Set)
-3. Each single avi file is decoded with 5FPS (it's depend your decision) in a single directory.
+3. You must have downloaded the [UCF101][3] (Action Recognition Data Set)
+4. Each single avi file is decoded with 5FPS (it's depend your decision) in a single directory.
     - you can use the `./list/convert_video_to_images.sh` script to decode the ucf101 video files
     - run `./list/convert_video_to_images.sh .../UCF101 5`
-4. Generate {train,test}.list files in `list` directory. Each line corresponds to "image directory" and a class (zero-based). For example:
+5. Generate {train,test}.list files in `list` directory. Each line corresponds to "image directory" and a class (zero-based). For example:
     - you can use the `./list/convert_images_to_list.sh` script to generate the {train,test}.list for the dataset
     - run `./list/convert_images_to_list.sh .../dataset_images 4`, this will generate `test.list` and `train.list` files by a factor 4 inside the root folder
 
