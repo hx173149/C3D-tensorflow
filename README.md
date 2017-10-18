@@ -62,10 +62,10 @@ From [the original paper](https://arxiv.org/pdf/1611.05431.pdf):
 ## Trained models
 |   Model             |   Description     |   Clouds  |  Download   |
 | ------------------- | ----------------- |  -------- | ------------|
-| C3D sports1M        |  ~4.1             |  Dropbox  |[C3D sports1M ](https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0)       |
-| C3D UCF101 split1   |  ~4.1             |  Dropbox  |[C3D UCF101 split1](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)       |
-| split1 meanfile     |  ~7.8             |  Dropbox  |[UCF101 split1 meanfile](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)      |
-| everything above    |  ~7.8             |  baiduyun |[baiduyun](http://pan.baidu.com/s/1nuJe8vn)      |
+| C3D sports1M        |C3D sports1M converted from caffe C3D|  Dropbox  |[C3D sports1M ](https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0)       |
+| C3D UCF101 split1   |finetuning on UCF101 split1 use C3D sports1M model |  Dropbox  |[C3D UCF101 split1](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)       |
+| split1 meanfile     | UCF101 split1 meanfile converted from caffe C3D  |  Dropbox  |[UCF101 split1 meanfile](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)      |
+| everything above    |  all three files above  |  baiduyun |[baiduyun](http://pan.baidu.com/s/1nuJe8vn)      |
 
 
 
