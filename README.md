@@ -51,15 +51,25 @@ https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_T
 baiduyun :http://pan.baidu.com/s/1nuJe8vn
 
 
-##  Experiment result
-From [the original paper](https://arxiv.org/pdf/1611.05431.pdf):
+##  Experiment result:
+- Note:
+    1.All report results are done specific on UCF101 split1 (train videos:9537,test videos:3783).
+    2.ALL the results are video-level accuracy,unless stated otherwise.
+    3.We follow the same way to extract clips from video as the C3D paper saying:'To extract C3D feature, a video is split into 16 frame long clips with a 8-frame overlap between two consecutive clips.These clips are passed to the C3D network to extract fc6 activations. These clip fc6 activations are averaged to form a 4096-dim video descriptor which is then followed by an L2-normalization'
 
-| cardinality | widen_factor | parameters |  Error cifar10   |   error cifar100  | default |
-|:-----------:|:------------:|:----------:|:----------------:|:-----------------:|:-------:|
-|      8      |       4      |    34.4M   |       3.65       |       17.77       |    x    |
-|      16     |      64      |    68.1M   |       3.58       |       17.31       |         |
+- C3D as feature extractor:
+|   platform  | pre-train model | fc6+SVM |  fc6+SVM+L2 norm   | 
+|:-----------:|:---------------:|:----------:|:----------------:|
+|   caffe     | conv3d_deepnetA_sport1m_iter_1900000.caffemodel|    83.39%   |       81.99%      |
+| tensorflow  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |    81.44%   |       79.38%      |
 
-## Trained models
+- finetune C3D network from pre-trained model:
+|   platform  | pre-train model | fc6+SVM |  fc6+SVM+L2 norm   | 
+|:-----------:|:---------------:|:----------:|:----------------:|
+|   caffe     | conv3d_deepnetA_sport1m_iter_1900000.caffemodel|    83.39%   |       81.99%      |
+| tensorflow  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |    81.44%   |       79.38%      |
+
+## Trained models:
 |   Model             |   Description     |   Clouds  |  Download   |
 | ------------------- | ----------------- |  -------- | ------------|
 | C3D sports1M        |C3D sports1M converted from caffe C3D|  Dropbox  |[C3D sports1M ](https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0)       |
