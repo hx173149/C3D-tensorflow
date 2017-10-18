@@ -1,5 +1,7 @@
 # C3D-tensorflow
 
+This is a repository trying to implement [C3D-caffe][5] on tensorflow,use models directly converted from original C3D-caffe.
+
 ## Requirements:
 
 1. Have installed the tensorflow >= 1.2 version
@@ -44,13 +46,6 @@ database/ucf101/train/BalanceBeam/v_BalanceBeam_g01_c04 4
 2. `python predict_c3d_ucf101.py` will test C3D model on a validation data set.
 
 
-
-Top-1 accuracy of 72.6% should be achieved for the validation dataset with this code and pre-trained from the sports1M model. You can download my pretrained UCF101 model and mean file from here:
-https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0
-https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0
-baiduyun :http://pan.baidu.com/s/1nuJe8vn
-
-
 ##  Experiment result:
 - Note:
     1.All report results are done specific on UCF101 split1 (train videos:9537,test videos:3783).
@@ -59,17 +54,24 @@ baiduyun :http://pan.baidu.com/s/1nuJe8vn
 
 - C3D as feature extractor:
 
-|   platform  | pre-train model | fc6+SVM |  fc6+SVM+L2 norm   | 
+|   platform  | pre-trained model | fc6+SVM |  fc6+SVM+L2 norm   | 
 |:-----------:|:---------------:|:----------:|:----------------:|
 |   caffe     | conv3d_deepnetA_sport1m_iter_1900000.caffemodel|    83.39%   |       81.99%      |
 | tensorflow  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |    81.44%   |       79.38%      |
+| tensorflow  | sports1m_finetuning_ucf101.model  |    82.73%   |       85.35%      |
 
-- finetune C3D network from pre-trained model:
+- finetune C3D network on UCF101 split1 use sport1m pre-trained model:
 
-|   platform  | pre-train model | fc6+SVM |  fc6+SVM+L2 norm   | 
+|   platform  | pre-trained model |fine-tuning-video|  fine-tuning-clip   | 
 |:-----------:|:---------------:|:----------:|:----------------:|
-|   caffe     | conv3d_deepnetA_sport1m_iter_1900000.caffemodel|    83.39%   |       81.99%      |
-| tensorflow  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |    81.44%   |       79.38%      |
+|   caffe     | conv3d_deepnetA_sport1m_iter_1900000.caffemodel|    -   |       79.87%     |
+| tensorflow-A  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |    76.0%   |       71%    |
+| tensorflow-B  | sports1m_finetuning_ucf101.model  |    79.93%  |       74.65%   |
+
+- Note:
+    1.the tensorflow-A model corresponding to the original C3D model provided by @ [hx173149][7]
+    2.the tensorflow-B model is just freeze the conv layers in tensorflow-A and finetuning  four more epochs on fc layers with learning rate=1e-3.
+    3.with no doubt that you can get better result by appropriately finetuning the network
 
 ## Trained models:
 |   Model             |   Description     |   Clouds  |  Download   |
@@ -94,3 +96,4 @@ baiduyun :http://pan.baidu.com/s/1nuJe8vn
 [4]: https://github.com/dutran
 [5]: https://github.com/facebook/C3D
 [6]: http://vlg.cs.dartmouth.edu/c3d/
+[7]:https://github.com/hx173149/C3D-tensorflow
