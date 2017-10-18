@@ -59,7 +59,8 @@ but if you load conv3d_deepnetA_sport1m_iter_1900000_TF.model,you don't need tra
 |:-----------:|:---------------:|:----------:|:----------------:|
 |   caffe     | conv3d_deepnetA_sport1m_iter_1900000.caffemodel|    83.39%   |       81.99%      |
 | tensorflow  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |    81.44%   |       79.38%      |
-| tensorflow  | sports1m_finetuning_ucf101.model  |    82.73%   |       85.35%      |
+| tensorflow-A  | sports1m_finetuning_ucf101.model  |    82.73%   |       85.35%      |
+| tensorflow-B  | sports1m_finetuning_ucf101.model(more train)  |    81.55%   |       83.2%      |
 
 - finetune C3D network on UCF101 split1 use sport1m pre-trained model:
 
