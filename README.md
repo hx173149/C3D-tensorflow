@@ -59,13 +59,7 @@ From [the original paper](https://arxiv.org/pdf/1611.05431.pdf):
 |      8      |       4      |    34.4M   |       3.65       |       17.77       |    x    |
 |      16     |      64      |    68.1M   |       3.58       |       17.31       |         |
 
-## Trained models and curves
-
-
-
-baiduyun :http://pan.baidu.com/s/1nuJe8vn
-![C3D sports1M pre-trained model converted from original caffe C3D:](https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0)
-![C3D pretrained UCF101 model and mean file finutuning from sports1M pre-trained model](https://github.com/prlz77/ResNeXt.pytorch/blob/master/cifar100/cifar-100.jpg)
+## Trained models
 |   Model             |   Description     |  Download   |
 | ------------------- | ----------------- | ------------|
 | C3D sports1M        |  ~4.1  |  23.9        | [C3D sports1M ](https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0)       |
