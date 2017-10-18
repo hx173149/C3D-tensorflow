@@ -1,6 +1,6 @@
 # C3D-tensorflow
 
-This is a repository trying to implement [C3D-caffe][5] on tensorflow,use models directly converted from original C3D-caffe.
+This is a repository trying to implement [C3D-caffe][5] on tensorflow,useing models directly converted from original C3D-caffe.
 
 ## Requirements:
 
@@ -47,7 +47,7 @@ database/ucf101/train/BalanceBeam/v_BalanceBeam_g01_c04 4
 
 
 ##  Experiment result:
-- Note:
+- Note:              
     1.All report results are done specific on UCF101 split1 (train videos:9537,test videos:3783).
     2.ALL the results are video-level accuracy,unless stated otherwise.
     3.We follow the same way to extract clips from video as the C3D paper saying:'To extract C3D feature, a video is split into 16 frame long clips with a 8-frame overlap between two consecutive clips.These clips are passed to the C3D network to extract fc6 activations. These clip fc6 activations are averaged to form a 4096-dim video descriptor which is then followed by an L2-normalization'
@@ -68,8 +68,7 @@ database/ucf101/train/BalanceBeam/v_BalanceBeam_g01_c04 4
 | tensorflow-A  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |    76.0%   |       71%    |
 | tensorflow-B  | sports1m_finetuning_ucf101.model  |    79.93%  |       74.65%   |
 
-- Note:
-
+- Note:        
     1.the tensorflow-A model corresponding to the original C3D model provided by @ [hx173149][7] .    
     2.the tensorflow-B model is just freeze the conv layers in tensorflow-A and finetuning  four more epochs on fc layers with learning rate=1e-3.
     3.with no doubt that you can get better result by appropriately finetuning the network
