@@ -70,6 +70,7 @@ database/ucf101/train/BalanceBeam/v_BalanceBeam_g01_c04 4
 
 - Note:
     1.the tensorflow-A model corresponding to the original C3D model provided by @ [hx173149][7] .
+    
     2.the tensorflow-B model is just freeze the conv layers in tensorflow-A and finetuning  four more epochs on fc layers with learning rate=1e-3.
     3.with no doubt that you can get better result by appropriately finetuning the network
 
