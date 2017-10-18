@@ -58,12 +58,14 @@ baiduyun :http://pan.baidu.com/s/1nuJe8vn
     3.We follow the same way to extract clips from video as the C3D paper saying:'To extract C3D feature, a video is split into 16 frame long clips with a 8-frame overlap between two consecutive clips.These clips are passed to the C3D network to extract fc6 activations. These clip fc6 activations are averaged to form a 4096-dim video descriptor which is then followed by an L2-normalization'
 
 - C3D as feature extractor:
+
 |   platform  | pre-train model | fc6+SVM |  fc6+SVM+L2 norm   | 
 |:-----------:|:---------------:|:----------:|:----------------:|
 |   caffe     | conv3d_deepnetA_sport1m_iter_1900000.caffemodel|    83.39%   |       81.99%      |
 | tensorflow  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |    81.44%   |       79.38%      |
 
 - finetune C3D network from pre-trained model:
+
 |   platform  | pre-train model | fc6+SVM |  fc6+SVM+L2 norm   | 
 |:-----------:|:---------------:|:----------:|:----------------:|
 |   caffe     | conv3d_deepnetA_sport1m_iter_1900000.caffemodel|    83.39%   |       81.99%      |
