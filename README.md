@@ -57,8 +57,8 @@ but if you load conv3d_deepnetA_sport1m_iter_1900000_TF.model,you don't need tra
 
 |   platform  | pre-trained model | fc6+SVM |  fc6+SVM+L2 norm   | 
 |:-----------:|:---------------:|:----------:|:----------------:|
-|   caffe     | conv3d_deepnetA_sport1m_iter_1900000.caffemodel|    83.39%   |       81.99%      |
-| tensorflow  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |    81.44%   |       79.38%      |
+|   caffe     | conv3d_deepnetA_sport1m_iter_1900000.caffemodel|   81.99%    |       83.39%      |
+| tensorflow  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |   79.38%    |       81.44%      |
 | tensorflow-A  | sports1m_finetuning_ucf101.model  |    82.73%   |       85.35%      |
 | tensorflow-B  | sports1m_finetuning_ucf101.model(more train)  |    81.55%   |       83.2%      |
 
