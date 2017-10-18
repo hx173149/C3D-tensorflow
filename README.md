@@ -44,7 +44,7 @@ database/ucf101/train/BalanceBeam/v_BalanceBeam_g01_c04 4
 2. `python predict_c3d_ucf101.py` will test C3D model on a validation data set.
 3.  `cd C3D-tensorflow-1.0 &&python Random_clip_valid.py` will get the random-clip accuracy on UCF101 test set with provided sports1m_finetuning_ucf101.model.
 4. `C3D-tensorflow-1.0/Random_clip_valid.py` code is compatible with tensorflow 1.0+,it's a little bit different with the old repository
-5. IMPORTANT NOTE: when you load the sports1m_finetuning_ucf101.model,you should use the tranpose operation like:` pool5 = tf.transpose(pool5, perm=[0,1,4,2,3])`,
+5. IMPORTANT NOTE: when you load the sports1m_finetuning_ucf101.model,you should use the tranpose operation like:` pool5 = tf.transpose(pool5, perm=[0,1,4,2,3])`,or in Random_clip_valid.py looks like:["transpose", [0, 1, 4, 2, 3]], 
 but if you load conv3d_deepnetA_sport1m_iter_1900000_TF.model,you don't need tranpose operation,just comment that line code.  
 
 ##  Experiment result:
