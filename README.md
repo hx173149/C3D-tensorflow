@@ -60,12 +60,12 @@ From [the original paper](https://arxiv.org/pdf/1611.05431.pdf):
 |      16     |      64      |    68.1M   |       3.58       |       17.31       |         |
 
 ## Trained models
-|   Model             |   Description     |  Download   |
-| ------------------- | ----------------- | ------------|
-| C3D sports1M        |  ~4.1             | [C3D sports1M ](https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0)       |
-| C3D UCF101 split1   |  ~4.1             | [C3D UCF101 split1](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)       |
-| split1 meanfile     |  ~7.8             | [UCF101 split1 meanfile](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)      |
-| everything above    |  ~7.8             | [baiduyun](http://pan.baidu.com/s/1nuJe8vn)      |
+|   Model             |   Description     |   Clouds  |  Download   |
+| ------------------- | ----------------- |  -------- | ------------|
+| C3D sports1M        |  ~4.1             |  Dropbox  |[C3D sports1M ](https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0)       |
+| C3D UCF101 split1   |  ~4.1             |  Dropbox  |[C3D UCF101 split1](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)       |
+| split1 meanfile     |  ~7.8             |  Dropbox  |[UCF101 split1 meanfile](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)      |
+| everything above    |  ~7.8             |  baiduyun |[baiduyun](http://pan.baidu.com/s/1nuJe8vn)      |
 
 
 
