@@ -43,10 +43,38 @@ database/ucf101/train/BalanceBeam/v_BalanceBeam_g01_c04 4
 1. `python train_c3d_ucf101.py` will train C3D model. The trained model will saved in `models` directory.
 2. `python predict_c3d_ucf101.py` will test C3D model on a validation data set.
 
-## Experiment result:
+
 
 Top-1 accuracy of 72.6% should be achieved for the validation dataset with this code and pre-trained from the sports1M model. You can download my pretrained UCF101 model and mean file from here:
 https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0
+https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0
+baiduyun :http://pan.baidu.com/s/1nuJe8vn
+
+
+##  Experiment result
+From [the original paper](https://arxiv.org/pdf/1611.05431.pdf):
+
+| cardinality | widen_factor | parameters |  Error cifar10   |   error cifar100  | default |
+|:-----------:|:------------:|:----------:|:----------------:|:-----------------:|:-------:|
+|      8      |       4      |    34.4M   |       3.65       |       17.77       |    x    |
+|      16     |      64      |    68.1M   |       3.58       |       17.31       |         |
+
+## Trained models and curves
+
+
+
+baiduyun :http://pan.baidu.com/s/1nuJe8vn
+![C3D sports1M pre-trained model converted from original caffe C3D:](https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0)
+![C3D pretrained UCF101 model and mean file finutuning from sports1M pre-trained model](https://github.com/prlz77/ResNeXt.pytorch/blob/master/cifar100/cifar-100.jpg)
+|   Model             |   Description     |  Download   |
+| ------------------- | ----------------- | ------------|
+| C3D sports1M        |  ~4.1  |  23.9        | [C3D sports1M ](https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0)       |
+| C3D UCF101 split1   |  ~4.1  |  22.2        | [C3D UCF101 split1](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)       |
+| split1 meanfile     |  ~7.8  |  22.0        | [UCF101 split1 meanfile](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)      |
+| everything above    |  ~7.8  |  21.2        | [baiduyun](http://pan.baidu.com/s/1nuJe8vn)      |
+
+
+
 
 ## References:
 
