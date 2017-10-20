@@ -60,7 +60,7 @@ but if you load conv3d_deepnetA_sport1m_iter_1900000_TF.model,you don't need tra
 |:-----------:|:---------------:|:----------:|:----------------:|
 |   caffe     | conv3d_deepnetA_sport1m_iter_1900000.caffemodel|   81.99%    |       83.39%      |
 | tensorflow  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |   79.38%    |       81.44%      |
-| tensorflow  | c3d_ucf101_finetune_whole_iter_20000_TF.model  |   %    |       %      |
+| tensorflow  | c3d_ucf101_finetune_whole_iter_20000_TF.model  |   81.33%    |       79.67%      |
 | tensorflow  | sports1m_finetuning_ucf101.model  |    82.73%   |       85.35%      |
 
 - finetune C3D network on UCF101 split1 use sport1m pre-trained model:
@@ -83,10 +83,10 @@ but if you load conv3d_deepnetA_sport1m_iter_1900000_TF.model,you don't need tra
 ## Trained models:
 |   Model             |   Description     |   Clouds  |  Download   |
 | ------------------- | ----------------- |  -------- | ------------|
-| C3D sports1M        |C3D sports1M converted from caffe C3D|  Dropbox  |[C3D sports1M ](https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0)       |
-| C3D UCF101   |C3D UCF101 trained model converted from caffe C3D|  Dropbox  |[C3D UCF101 ]()       |
+| C3D sports1M  TF      |C3D sports1M converted from caffe C3D|  Dropbox  |[C3D sports1M ](https://www.dropbox.com/s/zvco2rfufryivqb/conv3d_deepnetA_sport1m_iter_1900000_TF.model?dl=0)       |
+| C3D UCF101 TF  |C3D UCF101 trained model converted from caffe C3D|  Dropbox  |[C3D UCF101 ](https://www.dropbox.com/s/u5fxqzks2pkaolx/c3d_ucf101_finetune_whole_iter_20000_TF.model?dl=0 )       |
 | C3D UCF101  TF train   |finetuning on UCF101 split1 use C3D sports1M model by  @ [hx173149][7]|  Dropbox  |[C3D UCF101 split1](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)       |
-| split1 meanfile     | UCF101 split1 meanfile converted from caffe C3D  |  Dropbox  |[UCF101 split1 meanfile](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)      |
+| split1 meanfile  TF   | UCF101 split1 meanfile converted from caffe C3D  |  Dropbox  |[UCF101 split1 meanfile](https://www.dropbox.com/sh/8wcjrcadx4r31ux/AAAkz3dQ706pPO8ZavrztRCca?dl=0)      |
 | everything above    |  all four files above  |  baiduyun |[baiduyun](http://pan.baidu.com/s/1nuJe8vn)      |
 
 
