@@ -69,7 +69,7 @@ but if you load `conv3d_deepnetA_sport1m_iter_1900000_TF.model` or `c3d_ucf101_f
 |:-----------:|:---------------:|:----------------:|:----------------:|:----------------:|:----------------:|
 |   caffe     | c3d_ucf101_finetune_whole_iter_20000.caffemodel|    directly test   |    -   |       79.87%     |       -     |
 | tensorflow  | c3d_ucf101_finetune_whole_iter_20000_TF.model  |    directly test  |    78.35%   |       72.77%    |       57.15%    |
-| tensorflow-A  | conv3d_deepnetA_sport1m_iter_1900000_TF.caffemodel  |    whole finetuning   |    76.0%   |       71%    |       69.8%    |
+| tensorflow-A  | conv3d_deepnetA_sport1m_iter_1900000_TF.model  |    whole finetuning   |    76.0%   |       71%    |       69.8%    |
 | tensorflow-B  | sports1m_finetuning_ucf101.model  |    freeze conv,only finetune fc layers   |    79.93%  |       74.65%   |       76.6%     |
 
 
