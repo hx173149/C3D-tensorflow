@@ -90,7 +90,8 @@ but if you load `conv3d_deepnetA_sport1m_iter_1900000_TF.model` or `c3d_ucf101_f
 | everything above    |  all four files above  |  baiduyun |[baiduyun](http://pan.baidu.com/s/1nuJe8vn)      |
 
 
-
+## Other verions
+- [C3D-estimator-sagemaker](https://github.com/frankgu/C3D-estimator-sagemaker): Use sagemaker to train C3D model.
 
 ## References:
 
