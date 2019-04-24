@@ -9,7 +9,9 @@ Be aware that there are about 5% video-level accuracy margin on UCF101 split1  b
 2. You must have installed the following two python libs:
 a) [tensorflow][1]
 b) [Pillow][2]
-3. You must have downloaded the [UCF101][3] (Action Recognition Data Set)
+c) [jot][ sudo apt-get install athena-jot]
+
+3. You must have downloaded the [UCF101][4] (Action Recognition Data Set)
 4. Each single avi file is decoded with 5FPS (it's depend your decision) in a single directory.
     - you can use the `./list/convert_video_to_images.sh` script to decode the ucf101 video files
     - run `./list/convert_video_to_images.sh .../UCF101 5`
