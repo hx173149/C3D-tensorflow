@@ -92,6 +92,7 @@ but if you load `conv3d_deepnetA_sport1m_iter_1900000_TF.model` or `c3d_ucf101_f
 
 ## Other verions
 - [C3D-estimator-sagemaker](https://github.com/frankgu/C3D-estimator-sagemaker): Use sagemaker to train C3D model.
+- [C3D-tensorflow-eager-execution](https://github.com/Baichenjia/C3D-tensorflow-eager): Use tensorflow eager execution to train C3D model.
 
 ## References:
 
